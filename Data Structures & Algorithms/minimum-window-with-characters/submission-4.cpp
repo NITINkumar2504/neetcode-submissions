@@ -1,0 +1,50 @@
+class Solution {
+public:
+    bool cmp(unordered_map<char, int> &freqs, unordered_map<char, int> &freqt){
+        for(auto &[ch, freq] : freqt){
+            if(freqs[ch] < freq) return false;
+        }
+
+        return true;
+    }
+
+    string minWindow(string s, string t) {
+        if(t.size() > s.size()) return "";
+
+        // vector<int> freqt(128, 0);
+        // vector<int> freqs(128, 0);
+
+        unordered_map<char, int> freqs;
+        unordered_map<char, int> freqt;
+
+        for(auto &ch: t){
+            freqt[ch]++;
+        }
+
+        int i = 0;
+        int j = 0;
+        int substart = -1;
+        int subend = -1;
+        int sublen = INT_MAX;
+
+        while(j < s.size()){
+            freqs[s[j]]++;
+
+            while(cmp(freqs, freqt)){
+                if(j - i + 1 < sublen){
+                    substart = i;
+                    subend = j;
+                    sublen = j - i + 1;
+                }
+
+                freqs[s[i]]--;
+                i++;
+            }
+
+            j++;
+        }
+
+
+        return sublen == INT_MAX ? "" : s.substr(substart, sublen);
+    }
+};
